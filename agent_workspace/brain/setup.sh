@@ -65,7 +65,6 @@ echo "🔗 Vinculando recursos del cerebro..."
 link_resource "AGENTS.md"
 link_resource "SKILLS"        # Esto vinculará la carpeta completa
 link_resource "PROJECT_STATE.md"
-link_resource "DESIGN_DOC.md" # Agregado por si el agente necesita contexto de diseño
 
 # 6. Crear un archivo .gitkeep o README básico para que el cliente sepa qué es esto
 echo "# Espacio de Trabajo para $CLIENT_NAME
