@@ -1,20 +1,38 @@
-# PROJECT STATE LOG
+# PROJECT STATE & AUDIT LOG
 
-## Current Phase
-Phase 1: Infrastructure Setup & Agent Architecture
+> **Last Updated:** [Date] by [Agent-ID]
+> **System Health:** 🟢 Nominal | 🟡 Warning | 🔴 Critical
 
-## Active Tasks
+## 1. 📍 Roadmap & Phase
+**Current Phase:** Phase 1: Infrastructure Setup & Agent Architecture
+**Next Milestone:** Deploy Portfolio v1 (Next.js) behind Nginx.
+
+### Active Tasks (Kanban)
 - [x] Configure AWS EC2 (SSH, Python, MCP).
 - [x] Install Docker & Docker Compose.
-- [ ] Deploy Portfolio v1 (Next.js).
-- [ ] Configure Nginx/SSL.
+- [ ] **[HIGH PRIORITY]** Create Nginx reverse proxy configuration.
+- [ ] **[WAITING]** Deploy Portfolio v1 (Waiting for Nginx).
 
-## Critical Context
-- Server OS: Ubuntu 22.04 LTS (AWS EC2).
-- Container Runtime: Docker installed.
-- DB: PostgreSQL (Localhost).
-- Current IP: (Variable, check AWS Console).
+## 2. ⚙️ System Snapshot (Read-Only Context)
+*Agents: Do not modify unless infrastructure changes.*
+* **OS:** Ubuntu 22.04 LTS (AWS EC2 Tier Free)
+* **Public IP:** [Check AWS Console]
+* **Ports Exposed:** 22 (SSH), 80 (HTTP), 443 (HTTPS)
+* **Docker Containers:** `postgres-db`, `portfolio-frontend` (Planned)
 
-## Changelog
-- [2026-02-09] Initialized Project State. Docker installed successfully.
+---
 
+## 3. 📝 Agent Execution Log (Append-Only)
+*INSTRUCTION: Append new entries at the BOTTOM. Use the format provided below.*
+
+| Timestamp | Agent / Role | Action / Tool Used | Outcome / Result |
+| :--- | :--- | :--- | :--- |
+| 2026-02-09 10:00 | System-User | `setup.sh` | Initialized Project State & Docker. |
+| 2026-02-11 23:00 | Architect-Bot | `file_writer` | Updated AGENTS.md structure. |
+---
+
+## 4. 🐛 Known Issues & Technical Debt
+*Agents: Add items here if you encounter a blocker you cannot fix immediately.*
+
+* [ ] **Issue:** Nginx config validation fails on syntax check.
+* [ ] **Debt:** Hardcoded DB password in `.env` (Need to move to Secrets Manager later).
