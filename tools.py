@@ -34,7 +34,7 @@ def validar_ruta(nombre_archivo: str) -> Path:
     if not ruta_destino.is_relative_to(WORKSPACE_DIR.resolve()):
         raise ValueError(f"ACCESO DENEGADO: No puedes salir del workspace.")
     return ruta_destino
-    
+
 
 # --- HERRAMIENTAS DE BASE DE DATOS ---
 @mcp.tool()
@@ -132,7 +132,7 @@ def sys_ejecutar_script(nombre_archivo: str) -> str:
 # De esta forma estara dentro de la carpeta raiz del agente y, donde ellos mismos esperan buscar la tool
 SKILLS_DIR = "agent_workspace/.gemini/SKILLS"
 
-@mcp.tools
+@mcp.tool()
 def request_context_bundle(requested_skills: List[str]) -> str:
     """
 Carga y devuelve al agente el contenido de los skills necesarios para la tarea a realizar
