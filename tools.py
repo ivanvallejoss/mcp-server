@@ -27,10 +27,14 @@ def get_connection():
     return conn
 
 def validar_ruta(nombre_archivo: str) -> Path:
+    """
+    Valida que los archivos no salgan del workspace.
+    """
     ruta_destino = (WORKSPACE_DIR / nombre_archivo).resolve()
     if not ruta_destino.is_relative_to(WORKSPACE_DIR.resolve()):
         raise ValueError(f"ACCESO DENEGADO: No puedes salir del workspace.")
     return ruta_destino
+    
 
 # --- HERRAMIENTAS DE BASE DE DATOS ---
 @mcp.tool()
