@@ -7,15 +7,24 @@ from dotenv import load_dotenv
 from fastmcp import FastMCP
 from typing import List
 
-# --- CONFIGURACIÓN ---
+
+# ==========================================
+#          INITIAL CONFIGURATION
+# ==========================================
 load_dotenv()
+
 # Definimos la carpeta segura.
 WORKSPACE_DIR = Path(os.getcwd()) / "agent_workspace"
 WORKSPACE_DIR.mkdir(exist_ok=True)
 
+# Declaramos el servidor MCP
 mcp = FastMCP("Backend Lab Agent - Code Interpreter")
 
-# --- UTILIDADES ---
+
+# ==========================================
+#               UTILITIES
+# ==========================================
+
 def get_connection():
     conn = psycopg2.connect(
         dbname=os.getenv("DB_NAME"),
@@ -36,7 +45,9 @@ def validar_ruta(nombre_archivo: str) -> Path:
     return ruta_destino
 
 
-# --- HERRAMIENTAS DE BASE DE DATOS ---
+# ==========================================
+#               DB TOOLS
+# ==========================================
 @mcp.tool()
 def db_listar_tablas() -> str:
     """Lista tablas en la BD."""
@@ -66,7 +77,10 @@ def db_ejecutar_sql(query: str) -> str:
         return "✅ SQL Ejecutado."
     except Exception as e: return f"Error SQL: {e}"
 
-# --- HERRAMIENTAS DE ARCHIVOS ---
+
+# ==========================================
+#         FILE MANAGER TOOL
+# ==========================================
 @mcp.tool()
 def fs_listar_archivos() -> str:
     try:
@@ -93,7 +107,10 @@ def fs_leer_archivo(nombre_archivo: str) -> str:
             return f.read()
     except Exception as e: return f"Error: {e}"
 
-# --- EJECUTAR SCRIPTS ---
+
+# ==========================================
+#           COMMANDS & SCRIPTS
+# ==========================================
 @mcp.tool()
 def sys_ejecutar_script(nombre_archivo: str) -> str:
     """Ejecuta un script de Python que esté en el workspace y devuelve el Output."""
@@ -126,7 +143,48 @@ def sys_ejecutar_script(nombre_archivo: str) -> str:
     except Exception as e:
         return f"❌ Error de ejecución: {e}"
 
-# --- CARGAR LOS SKILLS EN EL AGENTE ----
+@mcp.tool()
+def run_command(command: str) -> str:
+    """
+    Ejecuta un comando de terminal (Bash) en el sistema.
+    REQUIERE autorizacion del usuario en el cliente.
+
+    Args:
+        command: El comando a ejecutar (ej: 'ls -al', 'docker ps')
+    """
+    # Utilizamos la ruta tipo sandbox creada para la ejecucion de scripts
+    SAFE_CWD = WORKSPACE_DIR
+
+    try:
+        # shlex.split maneja correctamente los espacios en argumentos
+        args = shlex.split(command)
+
+        # Ejecutamos un timeout de 60s para evitar procesos colgados
+        result = subprocess.run(
+            args,
+            cwd=SAFE_CWD,
+            capture_output=True,
+            text=True,
+            timeout=60
+        )
+
+        output = f"----- STDOUT -----\n{result.stdout}\n"
+        if result.stderr:
+            output += f"----- STDERR -----\n{result.stderr}\n"
+        
+        return output
+
+    except FileNotFoundError:
+        return f"Error: El comando '{args[0]}' no existe o no esta instalado"
+    except subprocess.TimeoutExpired:
+        return "Error: El comando excedio el tiempo limite de 60 segundos."
+    except Exception as e:
+        return f"Error critico ejecutnado comando: {str(e)}"
+
+
+# ==========================================
+#             SKILLS ON AGENTS
+# ==========================================
 
 # Por ahora hardcodeamos la carpeta de .gemini y, en un futuro, implementaremos tools dentro de cada agente
 # De esta forma estara dentro de la carpeta raiz del agente y, donde ellos mismos esperan buscar la tool
