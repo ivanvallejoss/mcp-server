@@ -168,11 +168,19 @@ def run_command(command: str) -> str:
             timeout=60
         )
 
-        output = f"----- STDOUT -----\n{result.stdout}\n"
-        if result.stderr:
-            output += f"----- STDERR -----\n{result.stderr}\n"
-        
-        return output
+        stdout = result.stdout.strip()
+        stderr = result.stderr.strip()
+
+        output_msg = []
+        if stdout:
+            output_msg.append(f"STDOUT:\n{stdout}")
+        if stderr:
+            output_msg.append(f"STDERR:\n{stderr}")
+
+        if not stdout and not stderr and result.returncode == 0:
+            return "SUCCESS: Command executed successfully with no output."
+
+        return "\n".join(output_msg)
 
     except FileNotFoundError:
         return f"Error: El comando '{args[0]}' no existe o no esta instalado"
