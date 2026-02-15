@@ -2,6 +2,7 @@ import os
 import sys
 import subprocess
 import psycopg2
+import shlex
 from pathlib import Path
 from dotenv import load_dotenv
 from fastmcp import FastMCP
